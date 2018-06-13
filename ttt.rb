@@ -80,155 +80,179 @@ describe Board do
     end
   end
 
-  describe '#winner' do
-    describe 'when no one has won' do
+  describe 'win logic' do
+    describe '#winner' do
+      describe 'when no one has won' do
 
-      it 'returns nil' do
-        @board.winner.must_be :nil?
+        it 'returns nil' do
+          @board.winner.must_be :nil?
+        end
+      end
+
+      describe 'when someone has won horizontally' do
+        before do
+          winning_moves = [ ['X','X','X'],
+                            ['O',nil,nil],
+                            ['O',nil,nil]]
+          @board.instance_variable_set(:@moves, winning_moves)
+        end
+
+        it 'returns the mark of the winner' do
+          @board.winner.must_equal 'X'
+        end
+      end
+
+      describe 'when someone has won vertically' do
+        before do
+          winning_moves = [ [nil,'X','O'],
+                            [nil,'X','O'],
+                            ['X',nil,'O']]
+          @board.instance_variable_set(:@moves, winning_moves)
+        end
+
+        it 'returns the mark of the winner' do
+          @board.winner.must_equal 'O'
+        end
+      end
+
+      describe 'when someone has won diagonally' do
+        before do
+          winning_moves = [ [nil,'X','O'],
+                            [nil,'O','X'],
+                            ['O','X','X']]
+          @board.instance_variable_set(:@moves, winning_moves)
+        end
+
+        it 'returns the mark of the winner' do
+          @board.winner.must_equal 'O'
+        end
       end
     end
 
-    describe 'when someone has won horizontally' do
-      before do
-        winning_moves = [ ['X','X','X'],
-                          ['O',nil,nil],
+    describe '#horizontal_winner' do
+      describe 'when no one has won' do
+
+        it 'returns nil' do
+          @board.horizontal_winner.must_be :nil?
+        end
+      end
+
+      describe 'when X has won horizontally' do
+        before do
+          winning_moves = [ ['X','X','X'],
+                            ['O',nil,nil],
+                            ['O',nil,nil]]
+          @board.instance_variable_set(:@moves, winning_moves)
+        end
+
+        it 'returns the mark of the winner' do
+          @board.horizontal_winner.must_equal 'X'
+        end
+      end
+
+      describe 'when O has won horizontally' do
+        before do
+          winning_moves = [ [nil,'X','X'],
+                            [nil,'X',nil],
+                            ['O','O','O']]
+          @board.instance_variable_set(:@moves, winning_moves)
+        end
+
+        it 'returns the mark of the winner' do
+          @board.horizontal_winner.must_equal 'O'
+        end
+      end
+    end
+
+    describe '#vertical_winner' do
+      describe 'when no one has won' do
+
+        it 'returns nil' do
+          @board.vertical_winner.must_be :nil?
+        end
+      end
+
+      describe 'when X has won vertically' do
+        before do
+          winning_moves = [ ['O','X',nil],
+                            ['O','X',nil],
+                            [nil,'X',nil]]
+          @board.instance_variable_set(:@moves, winning_moves)
+        end
+
+        it 'returns the mark of the winner' do
+          @board.vertical_winner.must_equal 'X'
+        end
+      end
+
+      describe 'when O has won vertically' do
+        before do
+          winning_moves = [ [nil,'X','O'],
+                            [nil,'X','O'],
+                            ['X',nil,'O']]
+          @board.instance_variable_set(:@moves, winning_moves)
+        end
+
+        it 'returns the mark of the winner' do
+          @board.vertical_winner.must_equal 'O'
+        end
+      end
+    end
+
+    describe '#diagonal_winner' do
+      describe 'when no one has won' do
+
+        it 'returns nil' do
+          @board.diagonal_winner.must_be :nil?
+        end
+      end
+
+      describe 'when X has won diagonally' do
+        before do
+          winning_moves = [ ['X','O',nil],
+                            ['O','X','O'],
+                            [nil,'X','X']]
+          @board.instance_variable_set(:@moves, winning_moves)
+        end
+
+        it 'returns the mark of the winner' do
+          @board.diagonal_winner.must_equal 'X'
+        end
+      end
+
+      describe 'when O has won diagonally' do
+        before do
+          winning_moves = [ [nil,'X','O'],
+                            [nil,'O','X'],
+                            ['O','X','X']]
+          @board.instance_variable_set(:@moves, winning_moves)
+        end
+
+        it 'returns the mark of the winner' do
+          @board.diagonal_winner.must_equal 'O'
+        end
+      end
+    end
+
+    describe '#axis_to_winner' do
+      describe 'when passed the rows of moves from a given axis' do
+        describe 'when any given row is full of only one mark' do
+          it 'returns that mark' do
+            axis_moves = [['O',nil,nil],
+                          ['X','X','X'],
                           ['O',nil,nil]]
-        @board.instance_variable_set(:@moves, winning_moves)
-      end
+            @board.axis_to_winner(axis_moves).must_equal 'X'
+          end
+        end
 
-      it 'returns the mark of the winner' do
-        @board.winner.must_equal 'X'
-      end
-    end
-
-    describe 'when someone has won vertically' do
-      before do
-        winning_moves = [ [nil,'X','O'],
-                          [nil,'X','O'],
-                          ['X',nil,'O']]
-        @board.instance_variable_set(:@moves, winning_moves)
-      end
-
-      it 'returns the mark of the winner' do
-        @board.winner.must_equal 'O'
-      end
-    end
-
-    describe 'when someone has won diagonally' do
-      before do
-        winning_moves = [ [nil,'X','O'],
-                          [nil,'O','X'],
-                          ['O','X','X']]
-        @board.instance_variable_set(:@moves, winning_moves)
-      end
-
-      it 'returns the mark of the winner' do
-        @board.winner.must_equal 'O'
-      end
-    end
-  end
-
-  describe '#horizontal_winner' do
-    describe 'when no one has won' do
-
-      it 'returns nil' do
-        @board.horizontal_winner.must_be :nil?
-      end
-    end
-
-    describe 'when X has won horizontally' do
-      before do
-        winning_moves = [ ['X','X','X'],
-                          ['O',nil,nil],
-                          ['O',nil,nil]]
-        @board.instance_variable_set(:@moves, winning_moves)
-      end
-
-      it 'returns the mark of the winner' do
-        @board.horizontal_winner.must_equal 'X'
-      end
-    end
-
-    describe 'when O has won horizontally' do
-      before do
-        winning_moves = [ [nil,'X','X'],
-                          [nil,'X',nil],
-                          ['O','O','O']]
-        @board.instance_variable_set(:@moves, winning_moves)
-      end
-
-      it 'returns the mark of the winner' do
-        @board.horizontal_winner.must_equal 'O'
-      end
-    end
-  end
-
-  describe '#vertical_winner' do
-    describe 'when no one has won' do
-
-      it 'returns nil' do
-        @board.vertical_winner.must_be :nil?
-      end
-    end
-
-    describe 'when X has won vertically' do
-      before do
-        winning_moves = [ ['O','X',nil],
-                          ['O','X',nil],
-                          [nil,'X',nil]]
-        @board.instance_variable_set(:@moves, winning_moves)
-      end
-
-      it 'returns the mark of the winner' do
-        @board.vertical_winner.must_equal 'X'
-      end
-    end
-
-    describe 'when O has won vertically' do
-      before do
-        winning_moves = [ [nil,'X','O'],
-                          [nil,'X','O'],
-                          ['X',nil,'O']]
-        @board.instance_variable_set(:@moves, winning_moves)
-      end
-
-      it 'returns the mark of the winner' do
-        @board.vertical_winner.must_equal 'O'
-      end
-    end
-  end
-
-  describe '#diagonal_winner' do
-    describe 'when no one has won' do
-
-      it 'returns nil' do
-        @board.diagonal_winner.must_be :nil?
-      end
-    end
-
-    describe 'when X has won diagonally' do
-      before do
-        winning_moves = [ ['X','O',nil],
-                          ['O','X','O'],
-                          [nil,'X','X']]
-        @board.instance_variable_set(:@moves, winning_moves)
-      end
-
-      it 'returns the mark of the winner' do
-        @board.diagonal_winner.must_equal 'X'
-      end
-    end
-
-    describe 'when O has won diagonally' do
-      before do
-        winning_moves = [ [nil,'X','O'],
-                          [nil,'O','X'],
-                          ['O','X','X']]
-        @board.instance_variable_set(:@moves, winning_moves)
-      end
-
-      it 'returns the mark of the winner' do
-        @board.diagonal_winner.must_equal 'O'
+        describe 'when all rows have multiple marks or are not full' do
+          it 'returns nil' do
+            axis_moves = [['O',nil,nil],
+                          ['X','X','O'],
+                          [nil,nil,nil]]
+            @board.axis_to_winner(axis_moves).must_be :nil?
+          end
+        end
       end
     end
   end
