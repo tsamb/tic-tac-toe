@@ -233,6 +233,41 @@ describe Board do
     end
   end
 
+  describe 'axis transformation logic' do
+    before do
+      winning_moves = [ ['X','X','X'],
+                        ['O',nil,nil],
+                        ['O',nil,nil]]
+      @board.instance_variable_set(:@moves, winning_moves)
+    end
+
+    describe '#horizontals' do
+      it 'returns an array of all the board rows' do
+        expected_moves = [['X','X','X'],
+                          ['O',nil,nil],
+                          ['O',nil,nil]]
+        @board.horizontals.must_equal expected_moves
+      end
+    end
+
+    describe '#verticals' do
+      it 'returns an array of all the board columns' do
+        expected_moves = [['X','O','O'],
+                          ['X',nil,nil],
+                          ['X',nil,nil]]
+      @board.verticals.must_equal expected_moves
+      end
+    end
+
+    describe '#diagonals' do
+      it 'returns an array of all the board diagonals' do
+        expected_moves = [['X',nil,nil],
+                          ['X',nil,'O']]
+        @board.diagonals.must_equal expected_moves
+      end
+    end
+  end
+
   describe '#draw?' do
     describe 'when the board is full with no winner' do
       before do
