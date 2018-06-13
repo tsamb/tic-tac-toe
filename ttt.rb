@@ -1,4 +1,7 @@
+# requires Ruby >=2.3 for the safe navigation operator &.
+
 require 'minitest/autorun'
+require 'minitest/pride'
 
 class Board
   attr_reader :moves
@@ -10,6 +13,24 @@ class Board
   def place_mark(mark, x, y)
     moves[y][x] = mark
     return self
+  end
+
+  def winner
+    horizontal_winner || nil
+  end
+
+  def horizontal_winner
+    moves.reject { |row| row.any? { |mark| mark.nil? } }
+      .detect { |row| row.uniq.length == 1 }
+      &.first
+  end
+
+  def vertical_winner
+    
+  end
+
+  def diagonal_winner
+    
   end
 end
 
@@ -42,7 +63,7 @@ describe Board do
     describe 'when no one has won' do
 
       it 'returns nil' do
-        @board.winner.must_equal nil
+        @board.winner.must_be :nil?
       end
     end
 
@@ -56,6 +77,28 @@ describe Board do
 
       it 'returns the mark of the winner' do
         @board.winner.must_equal 'X'
+      end
+    end
+  end
+
+  describe '#horizontal_winner' do
+    describe 'when no one has won' do
+
+      it 'returns nil' do
+        @board.horizontal_winner.must_be :nil?
+      end
+    end
+
+    describe 'when someone has won' do
+      before do
+        winning_moves = [ ['X','X','X'],
+                          ['O',nil,nil],
+                          ['O',nil,nil]]
+        @board.instance_variable_set(:@moves, winning_moves)
+      end
+
+      it 'returns the mark of the winner' do
+        @board.horizontal_winner.must_equal 'X'
       end
     end
   end
