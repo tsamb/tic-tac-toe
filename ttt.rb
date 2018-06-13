@@ -26,7 +26,9 @@ class Board
   end
 
   def vertical_winner
-    
+    moves.transpose.reject { |row| row.any? { |mark| mark.nil? } }
+      .detect { |row| row.uniq.length == 1 }
+      &.first
   end
 
   def diagonal_winner
@@ -89,7 +91,7 @@ describe Board do
       end
     end
 
-    describe 'when someone has won' do
+    describe 'when X has won horizontally' do
       before do
         winning_moves = [ ['X','X','X'],
                           ['O',nil,nil],
@@ -99,6 +101,54 @@ describe Board do
 
       it 'returns the mark of the winner' do
         @board.horizontal_winner.must_equal 'X'
+      end
+    end
+
+    describe 'when O has won horizontally' do
+      before do
+        winning_moves = [ [nil,'X','X'],
+                          [nil,'X',nil],
+                          ['O','O','O']]
+        @board.instance_variable_set(:@moves, winning_moves)
+      end
+
+      it 'returns the mark of the winner' do
+        @board.horizontal_winner.must_equal 'O'
+      end
+    end
+  end
+
+  describe '#vertical_winner' do
+    describe 'when no one has won' do
+
+      it 'returns nil' do
+        @board.vertical_winner.must_be :nil?
+      end
+    end
+
+    describe 'when X has won vertically' do
+      before do
+        winning_moves = [ ['O','X',nil],
+                          ['O','X',nil],
+                          [nil,'X',nil]]
+        @board.instance_variable_set(:@moves, winning_moves)
+      end
+
+      it 'returns the mark of the winner' do
+        @board.vertical_winner.must_equal 'X'
+      end
+    end
+
+    describe 'when O has won vertically' do
+      before do
+        winning_moves = [ [nil,'X','O'],
+                          [nil,'X','O'],
+                          ['X',nil,'O']]
+        @board.instance_variable_set(:@moves, winning_moves)
+      end
+
+      it 'returns the mark of the winner' do
+        @board.vertical_winner.must_equal 'O'
       end
     end
   end
