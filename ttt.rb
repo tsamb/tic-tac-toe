@@ -16,7 +16,7 @@ class Board
   end
 
   def winner
-    horizontal_winner || nil
+    horizontal_winner || vertical_winner || diagonal_winner || nil
   end
 
   def horizontal_winner
@@ -102,6 +102,19 @@ describe Board do
         winning_moves = [ [nil,'X','O'],
                           [nil,'X','O'],
                           ['X',nil,'O']]
+        @board.instance_variable_set(:@moves, winning_moves)
+      end
+
+      it 'returns the mark of the winner' do
+        @board.winner.must_equal 'O'
+      end
+    end
+
+    describe 'when someone has won diagonally' do
+      before do
+        winning_moves = [ [nil,'X','O'],
+                          [nil,'O','X'],
+                          ['O','X','X']]
         @board.instance_variable_set(:@moves, winning_moves)
       end
 
@@ -214,5 +227,5 @@ describe Board do
         @board.diagonal_winner.must_equal 'O'
       end
     end
-  end  
+  end
 end
