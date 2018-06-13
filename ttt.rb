@@ -15,6 +15,10 @@ class Board
     return self
   end
 
+  def draw?
+    !winner && moves.flatten.none? { |move| move.nil? }
+  end
+
   def winner
     horizontal_winner || vertical_winner || diagonal_winner || nil
   end
@@ -44,8 +48,8 @@ class Board
       (0..moves.length - 1).map { |i| moves[i][moves.length - 1 - i] }]
   end
 
-  def axis_to_winner(axis)
-    axis.reject { |row| row.any? { |mark| mark.nil? } }
+  def axis_to_winner(axis_moves)
+    axis_moves.reject { |row| row.any? { |mark| mark.nil? } }
       .detect { |row| row.uniq.length == 1 }
       &.first
   end
@@ -225,6 +229,49 @@ describe Board do
 
       it 'returns the mark of the winner' do
         @board.diagonal_winner.must_equal 'O'
+      end
+    end
+  end
+
+  describe '#draw?' do
+    describe 'when the board is full with no winner' do
+      before do
+        draw_moves = [['X','O','O'],
+                      ['O','X','X'],
+                      ['X','X','O']]
+        @board.instance_variable_set(:@moves, draw_moves)
+      end
+
+      it 'is a draw' do
+        @board.draw?.must_equal true
+      end
+    end
+
+    describe 'when the board is not full' do
+      describe 'and no one has won' do
+        before do
+          mid_play_moves = [['X','O','O'],
+                            [nil,nil,nil],
+                            [nil,nil,'X']]
+          @board.instance_variable_set(:@moves, mid_play_moves)
+        end
+
+        it 'is not a draw' do
+          @board.draw?.must_equal false
+        end
+      end
+
+      describe 'and someone has won' do
+        before do
+          winning_moves = [ ['X','O',nil],
+                            ['O','X','O'],
+                            [nil,'X','X']]
+          @board.instance_variable_set(:@moves, winning_moves)
+        end
+
+        it 'is not a draw' do
+          @board.draw?.must_equal false
+        end
       end
     end
   end
