@@ -212,6 +212,13 @@ describe Board do
           @board.open_spot?(2,1).must_equal true
         end
       end
+
+      describe 'when the given coordinates are off the board' do
+        it 'returns true' do
+          @board.open_spot?(3,1).must_equal false
+          @board.open_spot?(4,0).must_equal false
+        end
+      end
     end
   end
 
