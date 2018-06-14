@@ -435,23 +435,77 @@ describe Board do
       end
     end
   end
+  describe 'final game states' do
+    describe '#draw?' do
+      describe 'when the board is full with no winner' do
+        before do
+          draw_moves = [['X','O','O'],
+                        ['O','X','X'],
+                        ['X','X','O']]
+          @board.instance_variable_set(:@moves, draw_moves)
+        end
 
-  describe '#draw?' do
-    describe 'when the board is full with no winner' do
-      before do
-        draw_moves = [['X','O','O'],
-                      ['O','X','X'],
-                      ['X','X','O']]
-        @board.instance_variable_set(:@moves, draw_moves)
+        it 'is a draw' do
+          @board.draw?.must_equal true
+        end
       end
 
-      it 'is a draw' do
-        @board.draw?.must_equal true
+      describe 'when the board is not full' do
+        describe 'and no one has won' do
+          before do
+            mid_play_moves = [['X','O','O'],
+                              [nil,nil,nil],
+                              [nil,nil,'X']]
+            @board.instance_variable_set(:@moves, mid_play_moves)
+          end
+
+          it 'is not a draw' do
+            @board.draw?.must_equal false
+          end
+        end
+
+        describe 'and someone has won' do
+          before do
+            winning_moves = [ ['X','O',nil],
+                              ['O','X','O'],
+                              [nil,'X','X']]
+            @board.instance_variable_set(:@moves, winning_moves)
+          end
+
+          it 'is not a draw' do
+            @board.draw?.must_equal false
+          end
+        end
       end
     end
 
-    describe 'when the board is not full' do
-      describe 'and no one has won' do
+    describe '#game_over?' do
+      describe 'when someone has won' do
+        before do
+          winning_moves = [ [nil,'X','O'],
+                            [nil,'O','X'],
+                            ['O','X','X']]
+          @board.instance_variable_set(:@moves, winning_moves)
+        end
+
+        it 'is true' do
+          @board.game_over?.must_equal true
+        end
+      end
+
+      describe 'when the game has been drawn' do
+        before do
+          draw_moves = [['X','O','O'],
+                        ['O','X','X'],
+                        ['X','X','O']]
+          @board.instance_variable_set(:@moves, draw_moves)
+        end
+        it 'is true' do
+          @board.game_over?.must_equal true
+        end
+      end
+
+      describe 'when no one has won and the game is still going' do
         before do
           mid_play_moves = [['X','O','O'],
                             [nil,nil,nil],
@@ -459,62 +513,9 @@ describe Board do
           @board.instance_variable_set(:@moves, mid_play_moves)
         end
 
-        it 'is not a draw' do
-          @board.draw?.must_equal false
+        it 'is false' do
+          @board.game_over?.must_equal false
         end
-      end
-
-      describe 'and someone has won' do
-        before do
-          winning_moves = [ ['X','O',nil],
-                            ['O','X','O'],
-                            [nil,'X','X']]
-          @board.instance_variable_set(:@moves, winning_moves)
-        end
-
-        it 'is not a draw' do
-          @board.draw?.must_equal false
-        end
-      end
-    end
-  end
-
-  describe '#game_over?' do
-    describe 'when someone has won' do
-      before do
-        winning_moves = [ [nil,'X','O'],
-                          [nil,'O','X'],
-                          ['O','X','X']]
-        @board.instance_variable_set(:@moves, winning_moves)
-      end
-
-      it 'is true' do
-        @board.game_over?.must_equal true
-      end
-    end
-
-    describe 'when the game has been drawn' do
-      before do
-        draw_moves = [['X','O','O'],
-                      ['O','X','X'],
-                      ['X','X','O']]
-        @board.instance_variable_set(:@moves, draw_moves)
-      end
-      it 'is true' do
-        @board.game_over?.must_equal true
-      end
-    end
-
-    describe 'when no one has won and the game is still going' do
-      before do
-        mid_play_moves = [['X','O','O'],
-                          [nil,nil,nil],
-                          [nil,nil,'X']]
-        @board.instance_variable_set(:@moves, mid_play_moves)
-      end
-
-      it 'is false' do
-        @board.game_over?.must_equal false
       end
     end
   end
