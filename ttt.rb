@@ -4,25 +4,38 @@ require 'minitest/spec'
 require 'minitest/pride'
 
 class Game
-  attr_reader :board, :view, :marks
+  attr_reader :board, :view, :players
 
   def initialize
     @board = Board.new
     @view = BoardView.new
-    @marks = ['X','O']
+    @players = [Player.new(name: 'Player 1', mark: 'X', human: true),
+                Player.new(name: 'Player 2', mark: 'O', human: true)]
     run
   end
 
   def run
     view.welcome(board)
     until board.game_over? do
-      view.display_turn_instructions(marks.first)
-      coords = get_and_validate_input
-      board.place_mark(marks.first, *coords)
+      view.display_turn_instructions(current_player)
+      coords = next_move(current_player)
+      board.place_mark(current_player.mark, *coords)
       view.print_moves(board.moves)
-      marks.rotate!
+      players.rotate!
     end
     view.game_over(board)
+  end
+
+  def current_player
+    players.first
+  end
+
+  def next_move(player)
+    if player.human?
+      get_and_validate_input
+    else
+      # TODO: implement computer player
+    end
   end
 
   def get_and_validate_input
@@ -73,8 +86,8 @@ class BoardView
     puts "Coords need to be a valid open spot on the board."
   end
 
-  def display_turn_instructions(mark)
-    puts "Player #{mark}'s turn."
+  def display_turn_instructions(player)
+    puts "#{player.name}'s turn#{"(computer)" if player.computer? }. (Playing as #{player.mark})"
   end
 
   def get_coords_from_user
