@@ -35,7 +35,7 @@ class Board
   end
 
   def open_spot?(x,y)
-    moves[y][x].nil?
+    y < moves.length && x < moves[y].length && moves[y][x].nil?
   end
 
   def place_mark(mark, x, y)
