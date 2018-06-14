@@ -19,7 +19,7 @@ class Game
       view.display_turn_instructions(current_player)
       coords = next_move(current_player)
       board.place_mark(current_player.mark, *coords)
-      view.print_moves(board.moves)
+      view.print_moves(board)
       players.rotate!
     end
     view.game_over(board)
@@ -58,22 +58,22 @@ class BoardView
     puts 'Tic Tac Toe!'
     puts 'When making a move, choose your spot using the following coordinates.'
     puts 'For example, if you wanted to mark the top right, you would enter: 2,0'
-    print_coords(board.moves)
+    print_coords(board)
     puts
-    print_moves(board.moves)
+    print_moves(board)
   end
 
   def print_moves(board)
-    padding = ("┼───" * board.length) + "┼\n"
+    padding = ("┼───" * board.moves.length) + "┼\n"
     puts padding
-    puts board.map { |row| row.map { |mark| mark ? "│ #{mark} " : "│   " }.join("") + "│" + "\n" }.join(padding)
+    puts board.moves.map { |row| row.map { |mark| mark ? "│ #{mark} " : "│   " }.join("") + "│" + "\n" }.join(padding)
     puts padding
   end
 
   def print_coords(board)
-    padding = ("┼───" * board.length) + "┼\n"
+    padding = ("┼───" * board.moves.length) + "┼\n"
     puts padding
-    puts board.map.with_index { |row, y| row.map.with_index { |mark, x| "│#{x},#{y}"}.join("") + "│" + "\n" }.join(padding)
+    puts board.moves.map.with_index { |row, y| row.map.with_index { |mark, x| "│#{x},#{y}"}.join("") + "│" + "\n" }.join(padding)
     puts padding
   end
 
