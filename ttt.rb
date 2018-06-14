@@ -4,24 +4,87 @@ require 'minitest/spec'
 require 'minitest/pride'
 
 class Game
+  attr_reader :board, :view, :marks
+
   def initialize
     @board = Board.new
     @view = BoardView.new
+    @marks = ['X','O']
     run
   end
 
   def run
-    @view.print(@board)
+    view.welcome
+    view.print_coords(board.moves)
+    until board.game_over? do
+      view.display_turn_instructions(marks.first)
+      coords = get_and_validate_input
+      board.place_mark(marks.first, *coords)
+      view.print(board.moves)
+      marks.rotate!
+    end
+    view.game_over(board)
+  end
+
+  def get_and_validate_input
+    raw_input = view.get_coords_from_user
+
+    unless raw_input =~ /\A\d+,\d+\z/
+      until raw_input =~ /\A\d+,\d+\z/ do
+        view.clarify_input_format
+        raw_input = view.get_coords_from_user
+      end
+    end
+    parsed_input = raw_input.split(',').map(&:to_i)
+    return parsed_input if board.open_spot?(*parsed_input)
+    view.clarify_input_validity
+    return get_and_validate_input
   end
 end
 
 class BoardView
+  def welcome
+    puts 'Tic Tac Toe!'
+    puts 'When making a move, choose your spot using the following coordinates.'
+    puts "For example, if you wanted to mark the top right, you would enter: 2,0"
+  end
+
   def print(board)
-    board.map { |row| row.map { |mark| mark ? "| #{mark} " : "|   " }.join("") + "|" + "\n" }.join("\n")
+    padding = ("┼───" * board.length) + "┼\n"
+    puts padding
+    puts board.map { |row| row.map { |mark| mark ? "│ #{mark} " : "│   " }.join("") + "│" + "\n" }.join(padding)
+    puts padding
   end
 
   def print_coords(board)
-    board.map.with_index { |row, y| row.map.with_index { |mark, x| "|#{x},#{y}"}.join("") + "|" + "\n" }.join("\n")
+    padding = ("┼───" * board.length) + "┼\n"
+    puts padding
+    puts board.map.with_index { |row, y| row.map.with_index { |mark, x| "│#{x},#{y}"}.join("") + "│" + "\n" }.join(padding)
+    puts padding
+  end
+
+  def clarify_input_format
+    puts "Input must be in x,y format. E.g. for top left you would enter: 0,0"
+  end
+
+  def clarify_input_validity
+    puts "Coords need to be a valid open spot on the board."
+  end
+
+  def display_turn_instructions(mark)
+    puts "Player #{mark}'s turn."
+  end
+
+  def get_coords_from_user
+    gets.chomp
+  end
+
+  def game_over(board)
+    if board.draw?
+      puts "Cat's game! (draw)"
+    else
+      puts "Winner is #{board.winner}!"
+    end
   end
 end
 
