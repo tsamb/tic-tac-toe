@@ -155,10 +155,10 @@ end
 
 class Player
   attr_reader :name, :mark
-  def initialize
-    @name = "Player"
-    @mark = "X"
-    @human = true
+  def initialize(args = {})
+    @name = args.fetch(:name, "Player")
+    @mark = args.fetch(:mark, "X")
+    @human = args.fetch(:human, true)
   end
 
   def human?
@@ -556,6 +556,14 @@ describe Player do
       describe '#human?' do
         it 'defaults to true' do
           @player.human?.must_equal true
+        end
+      end
+
+      describe '.new' do
+        describe 'accepts a hash of arguments' do
+          it 'returns a new object with the relevant attributes' do
+            Player.new({name: 'Sam', mark: 'O', human: true})
+          end
         end
       end
     end
