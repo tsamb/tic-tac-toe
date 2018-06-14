@@ -6,6 +6,8 @@ require 'minitest/pride'
 class Game
   attr_reader :board, :view, :players
 
+  VALID_COORDS = /\A\d+,\d+\z/
+
   def initialize
     @board = Board.new
     @view = BoardView.new
@@ -40,8 +42,8 @@ class Game
   def get_and_validate_input
     raw_input = view.get_coords_from_user
 
-    unless raw_input =~ /\A\d+,\d+\z/
-      until raw_input =~ /\A\d+,\d+\z/ do
+    unless raw_input =~ VALID_COORDS
+      until raw_input =~ VALID_COORDS do
         view.clarify_input_format
         raw_input = view.get_coords_from_user
       end
