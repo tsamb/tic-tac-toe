@@ -153,6 +153,19 @@ class Board
   end
 end
 
+class Player
+  attr_reader :name, :mark
+  def initialize
+    @name = "Player"
+    @mark = "X"
+    @human = true
+  end
+
+  def human?
+    @human
+  end
+end
+
 Game.new
 
 describe Board do
@@ -515,6 +528,34 @@ describe Board do
 
         it 'is false' do
           @board.game_over?.must_equal false
+        end
+      end
+    end
+  end
+end
+
+describe Player do
+  before do
+    @player = Player.new
+  end
+
+  describe 'when instantiated' do
+    describe 'has accessible attributes' do
+      describe '#name' do
+        it 'defaults to a non-empty string' do
+          @player.name.must_match /.+/
+        end
+      end
+
+      describe '#mark' do
+        it 'defaults to a character from A-Z' do
+          @player.instance_variable_get(:@mark).must_match /[A-Z]/
+        end
+      end
+
+      describe '#human?' do
+        it 'defaults to true' do
+          @player.human?.must_equal true
         end
       end
     end
