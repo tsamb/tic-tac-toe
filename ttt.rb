@@ -1,6 +1,6 @@
 # requires Ruby >=2.3 for the safe navigation operator &.
 
-require 'minitest/autorun'
+require 'minitest/spec'
 require 'minitest/pride'
 
 class Game
@@ -87,6 +87,8 @@ class Board
       &.first
   end
 end
+
+Game.new
 
 describe Board do
   before do
@@ -445,3 +447,5 @@ describe Board do
     end
   end
 end
+
+Minitest.run
