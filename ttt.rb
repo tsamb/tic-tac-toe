@@ -164,6 +164,10 @@ class Player
   def human?
     @human
   end
+
+  def computer?
+    !human?
+  end
 end
 
 # Game.new
@@ -565,6 +569,26 @@ describe Player do
             Player.new({name: 'Sam', mark: 'O', human: true})
           end
         end
+      end
+    end
+  end
+
+  describe '#computer?' do
+    describe 'when player is human' do
+      before do
+        @player = Player.new(name: 'Sam', mark: 'X', human: true)
+      end
+      it 'is false' do
+        @player.computer?.must_equal false
+      end
+    end
+
+    describe 'when player is not human' do
+      before do
+        @player = Player.new(name: 'HAL 9000', mark: 'O', human: false)
+      end
+      it 'is true' do
+        @player.computer?.must_equal true
       end
     end
   end
