@@ -166,7 +166,7 @@ class Player
   end
 end
 
-Game.new
+# Game.new
 
 describe Board do
   before do
