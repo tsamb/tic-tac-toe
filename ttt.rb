@@ -1,6 +1,7 @@
 # requires Ruby >=2.3 for the safe navigation operator &.
 
 require 'minitest/spec'
+require 'minitest/mock'
 require 'minitest/pride'
 
 class Game
@@ -603,6 +604,42 @@ describe Player do
       end
       it 'is true' do
         @player.computer?.must_equal true
+      end
+    end
+  end
+end
+
+describe Game do
+  before do
+    @game = Game.new
+  end
+
+  describe '#get_and_validate_input' do
+    describe 'when user enters correctly formatted and valid coords' do
+      it 'returns an array of ints' do
+        @game.view.stub :get_user_input, "1,1" do
+          @game.get_and_validate_input.must_equal [1,1]
+        end
+      end
+    end
+
+    describe 'when user enters correctly formatted but invalid coords' do
+      it 'prompts for input until it is valid' do
+        # # Cannot seem to stub for one return and then another with Minitest
+        # # Maybe implement with Mocks?
+        # @game.view.stub :get_user_input, "1,5" do # e.g. "1,5", "1,1"
+        #   @game.get_and_validate_input.must_equal [1,1]
+        # end
+      end
+    end
+
+    describe 'when user enters incorretly formatted coords' do
+      it 'prompts for input until it is correctly formatted' do
+        # # Cannot seem to stub for one return and then another with Minitest
+        # # Maybe implement with Mocks?
+        # @game.view.stub :get_user_input, "hello" do # e.g. "hello", "1,1"
+        #   @game.get_and_validate_input.must_equal [1,1]
+        # end
       end
     end
   end
