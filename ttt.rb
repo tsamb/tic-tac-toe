@@ -44,6 +44,10 @@ class Board
     return self
   end
 
+  def game_over?
+    !!(draw? || winner)
+  end
+
   def draw?
     !winner && moves.flatten.none? { |move| move.nil? }
   end
@@ -151,7 +155,7 @@ describe Board do
       describe 'when no one has won' do
 
         it 'returns nil' do
-          @board.winner.must_be :nil?
+          @board.winner.must_be_nil
         end
       end
 
@@ -397,6 +401,46 @@ describe Board do
         it 'is not a draw' do
           @board.draw?.must_equal false
         end
+      end
+    end
+  end
+
+  describe '#game_over?' do
+    describe 'when someone has won' do
+      before do
+        winning_moves = [ [nil,'X','O'],
+                          [nil,'O','X'],
+                          ['O','X','X']]
+        @board.instance_variable_set(:@moves, winning_moves)
+      end
+
+      it 'is true' do
+        @board.game_over?.must_equal true
+      end
+    end
+
+    describe 'when the game has been drawn' do
+      before do
+        draw_moves = [['X','O','O'],
+                      ['O','X','X'],
+                      ['X','X','O']]
+        @board.instance_variable_set(:@moves, draw_moves)
+      end
+      it 'is true' do
+        @board.game_over?.must_equal true
+      end
+    end
+
+    describe 'when no one has won and the game is still going' do
+      before do
+        mid_play_moves = [['X','O','O'],
+                          [nil,nil,nil],
+                          [nil,nil,'X']]
+        @board.instance_variable_set(:@moves, mid_play_moves)
+      end
+
+      it 'is false' do
+        @board.game_over?.must_equal false
       end
     end
   end
