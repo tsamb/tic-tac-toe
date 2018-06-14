@@ -3,6 +3,30 @@
 require 'minitest/autorun'
 require 'minitest/pride'
 
+class Game
+  def initialize
+    @board = Board.new
+    @view = BoardView.new
+    run
+  end
+
+  def run
+    @view.print(@board)
+  end
+end
+
+class BoardView
+  def print(board)
+    board.map { |row| row.map { |mark| mark ? "| #{mark} " : "|   " }.join("") + "|" + "\n" }.join("\n")
+  end
+
+  def print_coords(board)
+    board.map.with_index { |row, y| row.map.with_index { |mark, x| "|#{x},#{y}"}.join("") + "|" + "\n" }.join("\n")
+  end
+end
+
+class CoordinatesNotEmptyError < StandardError; end
+
 class Board
   attr_reader :moves
 
@@ -10,7 +34,12 @@ class Board
     @moves = Array.new(3) { Array.new(3) }
   end
 
+  def open_spot?(x,y)
+    moves[y][x].nil?
+  end
+
   def place_mark(mark, x, y)
+    raise CoordinatesNotEmptyError.new("existing mark at these coordinates") if moves[y][x]
     moves[y][x] = mark
     return self
   end
@@ -73,10 +102,47 @@ describe Board do
     end
   end
 
-  describe '#place_mark' do
-    it 'inserts the given mark into the given coordinate on the board' do
-      @board.place_mark('X', 0,0)
-      @board.moves[0][0].must_equal 'X'
+  describe 'mark placement' do
+    describe '#place_mark' do
+      describe 'when given coordinates containing no mark' do
+        it 'inserts the given mark into the given coordinate on the board' do
+          @board.place_mark('X', 0,0)
+          @board.moves[0][0].must_equal 'X'
+        end
+      end
+
+      describe 'when given coordinates containing an existing mark' do
+        before do
+          mid_play_moves = [['X','O',nil],
+                            [nil,nil,nil],
+                            [nil,nil,nil]]
+          @board.instance_variable_set(:@moves, mid_play_moves)
+        end
+
+        it 'raises an error' do
+          ->{ @board.place_mark('X', 0,0) }.must_raise CoordinatesNotEmptyError
+        end
+      end
+    end
+
+    describe '#open_spot?' do
+      before do
+        mid_play_moves = [['X','O','O'],
+                          ['X','O',nil],
+                          ['O','X','X']]
+        @board.instance_variable_set(:@moves, mid_play_moves)
+      end
+      describe 'when a mark is in the given coordinates' do
+        it 'returns false' do
+          @board.open_spot?(0,0).must_equal false
+        end
+      end
+
+      describe 'when no mark is in the given coordinates' do
+        it 'returns true' do
+          @board.open_spot?(2,1).must_equal true
+        end
+      end
     end
   end
 
