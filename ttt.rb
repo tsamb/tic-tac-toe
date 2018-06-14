@@ -14,13 +14,12 @@ class Game
   end
 
   def run
-    view.welcome
-    view.print_coords(board.moves)
+    view.welcome(board)
     until board.game_over? do
       view.display_turn_instructions(marks.first)
       coords = get_and_validate_input
       board.place_mark(marks.first, *coords)
-      view.print(board.moves)
+      view.print_moves(board.moves)
       marks.rotate!
     end
     view.game_over(board)
@@ -43,13 +42,16 @@ class Game
 end
 
 class BoardView
-  def welcome
+  def welcome(board)
     puts 'Tic Tac Toe!'
     puts 'When making a move, choose your spot using the following coordinates.'
-    puts "For example, if you wanted to mark the top right, you would enter: 2,0"
+    puts 'For example, if you wanted to mark the top right, you would enter: 2,0'
+    print_coords(board.moves)
+    puts
+    print_moves(board.moves)
   end
 
-  def print(board)
+  def print_moves(board)
     padding = ("┼───" * board.length) + "┼\n"
     puts padding
     puts board.map { |row| row.map { |mark| mark ? "│ #{mark} " : "│   " }.join("") + "│" + "\n" }.join(padding)
