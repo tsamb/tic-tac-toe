@@ -40,12 +40,12 @@ class Game
   end
 
   def get_and_validate_input
-    raw_input = view.get_coords_from_user
+    raw_input = view.get_user_input
 
     unless raw_input =~ VALID_COORDS
       until raw_input =~ VALID_COORDS do
         view.clarify_input_format
-        raw_input = view.get_coords_from_user
+        raw_input = view.get_user_input
       end
     end
     parsed_input = raw_input.split(',').map(&:to_i)
@@ -91,7 +91,7 @@ class BoardView
     puts "#{player.name}'s turn#{"(computer)" if player.computer? }. (Playing as #{player.mark})"
   end
 
-  def get_coords_from_user
+  def get_user_input
     gets.chomp
   end
 
