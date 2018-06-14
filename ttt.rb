@@ -11,7 +11,6 @@ class Game
     @view = BoardView.new
     @players = [Player.new(name: 'Player 1', mark: 'X', human: true),
                 Player.new(name: 'Player 2', mark: 'O', human: true)]
-    run
   end
 
   def run
@@ -183,7 +182,7 @@ class Player
   end
 end
 
-# Game.new
+# Game.new.run
 
 describe Board do
   before do
