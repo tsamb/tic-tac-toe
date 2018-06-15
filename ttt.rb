@@ -626,21 +626,19 @@ describe Game do
 
     describe 'when user enters correctly formatted but invalid coords' do
       it 'prompts for input until it is valid' do
-        # # Cannot seem to stub for one return and then another with Minitest
-        # # Maybe implement with Mocks?
-        # @game.view.stub :get_user_input, "1,5" do # e.g. "1,5", "1,1"
-        #   @game.get_and_validate_input.must_equal [1,1]
-        # end
+        input_stubs = ['1,5','1,1']
+        @game.view.stub :get_user_input, ->{input_stubs.shift} do
+          @game.get_and_validate_input.must_equal [1,1]
+        end
       end
     end
 
     describe 'when user enters incorretly formatted coords' do
       it 'prompts for input until it is correctly formatted' do
-        # # Cannot seem to stub for one return and then another with Minitest
-        # # Maybe implement with Mocks?
-        # @game.view.stub :get_user_input, "hello" do # e.g. "hello", "1,1"
-        #   @game.get_and_validate_input.must_equal [1,1]
-        # end
+        input_stubs = ['hello','0,0']
+        @game.view.stub :get_user_input, ->{input_stubs.shift} do
+          @game.get_and_validate_input.must_equal [0,0]
+        end
       end
     end
   end
