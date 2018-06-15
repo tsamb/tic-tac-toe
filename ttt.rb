@@ -37,6 +37,7 @@ class Game
       get_and_validate_input
     else
       # TODO: implement computer player
+      raise "computer player not implemented"
     end
   end
 
@@ -89,7 +90,7 @@ class BoardView
   end
 
   def display_turn_instructions(player)
-    puts "#{player.name}'s turn#{"(computer)" if player.computer? }. (Playing as #{player.mark})"
+    puts "#{player.name}'s turn#{" (computer)" if player.computer? }. (Playing as #{player.mark})"
   end
 
   def get_user_input
